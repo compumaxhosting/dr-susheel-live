@@ -1,55 +1,61 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import Image from 'next/image';
-import { useState } from 'react';
-
-/* ---------------------------------- */
-/* Button (inline) */
-/* ---------------------------------- */
-function Button({ children }: { children: React.ReactNode }) {
-  return (
-    <button className="bg-green-bg text-white px-6 py-3 rounded-full text-sm md:text-base hover:bg-primary transition">
-      {children}
-    </button>
-  );
-}
+import { motion, useReducedMotion } from "framer-motion";
+import Link from "next/link";
+import Image from "next/image";
+import { useState } from "react";
 
 /* ---------------------------------- */
 /* Component */
 /* ---------------------------------- */
 export default function AlignerTherapy() {
   const [imgError, setImgError] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
 
   return (
-    <section className="pt-12 pb-20 px-6 bg-white">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-
-        {/* LEFT */}
+    <section
+      className="pt-12 pb-20 px-6 bg-white"
+      aria-labelledby="aligner-heading"
+    >
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        {/* LEFT CONTENT */}
         <motion.div
-          initial={{ opacity: 0, x: -24 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
+          initial={shouldReduceMotion ? false : { opacity: 0, x: -24 }}
+          animate={shouldReduceMotion ? {} : { opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
         >
-          <p className="mb-2 text-sm tracking-widest text-primary eyebrow">
+          {/* Eyebrow */}
+          <p className="mb-2 text-sm tracking-widest text-primary uppercase">
             Clear Aligner Therapy
           </p>
 
-          <h1 className='text-foreground text-[40px] sm:text-[55px] md:text-[60px] lg:text-[65px] font-bold leading-tight'>
-            Straighter Teeth,<br />
-            <span className='text-primary'>
-              Invisible Treatment.
-            </span>
+          {/* Main Heading */}
+          <h1
+            id="aligner-heading"
+            className="text-foreground text-3xl sm:text-5xl lg:text-6xl font-bold leading-tight"
+          >
+            Straighter Teeth,
+            <br />
+            <span className="text-primary">Invisible Invisalign Treatment</span>
           </h1>
 
-          <p className="mt-6 mb-8 text-muted-text leading-relaxed text-sm md:text-base">
-            Invisalign is the world&apos;s leading clear aligner system — precision-engineered to move your teeth gradually with custom-made, virtually invisible trays. No wires. No brackets. No compromise.
+          {/* SEO-optimized paragraph */}
+          <p className="mt-6 mb-8 text-muted-text leading-relaxed text-sm md:text-base max-w-xl">
+            Invisalign clear aligners are a modern orthodontic solution designed
+            to straighten teeth without metal braces. These custom-made,
+            removable trays gradually shift your teeth into place, offering a
+            comfortable, discreet, and effective treatment for achieving a
+            confident smile.
           </p>
 
+          {/* CTA */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <Link href="/contact">
-              <Button>Start Your Smile Journey</Button>
+            <Link
+              href="/contact"
+              aria-label="Start your Invisalign consultation"
+              className="inline-block bg-green-bg text-white px-6 py-3 rounded-full text-sm md:text-base hover:bg-primary transition focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              Start Your Smile Journey
             </Link>
           </div>
         </motion.div>
@@ -57,25 +63,29 @@ export default function AlignerTherapy() {
         {/* RIGHT IMAGE */}
         <motion.div
           className="relative overflow-hidden"
-          style={{ borderRadius: '24px', aspectRatio: '4/3' }}
-          initial={{ opacity: 0, x: 24 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          style={{ borderRadius: "24px", aspectRatio: "4/3" }}
+          initial={shouldReduceMotion ? false : { opacity: 0, x: 24 }}
+          animate={shouldReduceMotion ? {} : { opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
         >
           {!imgError ? (
             <Image
               src="/images/invisalign-page.webp"
-              alt="Invisalign clear aligners treatment"
+              alt="Invisalign clear aligners on teeth showing invisible orthodontic treatment"
               fill
               className="object-cover"
               onError={() => setImgError(true)}
               priority
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-teal-300 to-teal-50" />
+            <div
+              className="w-full h-full bg-gradient-to-br from-teal-300 to-teal-50"
+              role="img"
+              aria-label="Placeholder image for Invisalign treatment"
+            />
           )}
         </motion.div>
-
       </div>
     </section>
   );

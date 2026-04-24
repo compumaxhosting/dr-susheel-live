@@ -1,12 +1,8 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
-import { Award, ShieldCheck, GraduationCap, Star } from 'lucide-react';
-
-/* ---------------------------------- */
-/* Types */
-/* ---------------------------------- */
-import { LucideIcon } from 'lucide-react';
+import { motion, useReducedMotion } from "framer-motion";
+import { Award, ShieldCheck, GraduationCap, Star } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 
 type Credential = {
   icon: LucideIcon;
@@ -14,103 +10,96 @@ type Credential = {
   sub: string;
 };
 
-/* ---------------------------------- */
-/* Section Header (Inline Replacement) */
-/* ---------------------------------- */
-function SectionHeader({
-  eyebrow,
-  title,
-  centered = false,
-}: {
-  eyebrow: string;
-  title: string;
-  centered?: boolean;
-}) {
-  return (
-    <div className={`mb-12 ${centered ? 'text-center' : ''}`}>
-      <p className="eyebrow text-sm tracking-widest text-primary mb-2">
-        {eyebrow}
-      </p>
-      <h2 className="text-3xl md:text-5xl font-semibold text-foreground">
-        {title}
-      </h2>
-    </div>
-  );
-}
-
-/* ---------------------------------- */
-/* Main Component */
-/* ---------------------------------- */
 export default function Credentials() {
+  const shouldReduceMotion = useReducedMotion();
+
   const credentials: Credential[] = [
     {
       icon: Award,
-      label: 'Certified Specialist',
-      sub: 'Recognized Expertise',
+      label: "Certified Invisalign Provider",
+      sub: "Specialised in clear aligner treatment",
     },
     {
       icon: GraduationCap,
-      label: 'Advanced Training',
-      sub: 'Continuous Learning',
+      label: "Advanced Orthodontic Training",
+      sub: "Latest techniques in smile correction",
     },
     {
       icon: ShieldCheck,
-      label: 'Trusted Care',
-      sub: 'Patient First Approach',
+      label: "Safe & Hygienic Clinic",
+      sub: "Strict sterilisation protocols followed",
     },
     {
       icon: Star,
-      label: 'Top Rated',
-      sub: 'Excellent Reviews',
+      label: "4.9★ Patient Rating",
+      sub: "Highly rated by satisfied patients",
     },
   ];
 
   return (
-    <section className="py-20 px-6 bg-scroll-track">
+    <section
+      className="py-20 px-6 bg-scroll-track"
+      aria-labelledby="credentials-heading"
+    >
       <div className="max-w-7xl mx-auto">
-        
-        <SectionHeader
-          eyebrow="Credentials"
-          title="Qualified. Experienced. Trusted."
-          centered
-        />
+        {/* HEADER */}
+        <header className="mb-12 text-center">
+          <p className="text-sm tracking-widest text-primary uppercase mb-2">
+            Why Choose Us
+          </p>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <h2
+            id="credentials-heading"
+            className="text-3xl md:text-5xl font-semibold text-foreground"
+          >
+            Experienced Invisalign Specialists in Hyderabad
+          </h2>
+
+          <p className="mt-4 text-muted-text max-w-2xl mx-auto text-sm">
+            Our clinic combines expertise, advanced technology, and
+            patient-focused care to deliver safe and effective orthodontic
+            treatments.
+          </p>
+        </header>
+
+        {/* LIST (SEMANTIC) */}
+        <ul className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {credentials.map((c, i) => {
             const Icon = c.icon;
 
             return (
-              <motion.div
+              <motion.li
                 key={c.label}
-                className="bg-white rounded-2xl p-6 text-center border-card-border shadow-sm"
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-80px' }}
-                transition={{ duration: 0.7, delay: i * 0.1 }}
+                className="bg-white rounded-2xl p-6 text-center border-card-border shadow-sm list-none"
+                initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
+                whileInView={shouldReduceMotion ? {} : { opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: i * 0.1 }}
               >
-                <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 bg-process-bg"
-                >
-                  <Icon size={20} className="text-primary" strokeWidth={1.5} />
+                <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 bg-process-bg">
+                  <Icon
+                    size={20}
+                    className="text-primary"
+                    strokeWidth={1.5}
+                    aria-hidden="true"
+                  />
                 </div>
 
-                <p
-                  className="font-medium text-foreground mb-1"
-                  style={{ fontSize: '14px' }}
-                >
+                <p className="font-medium text-foreground text-sm mb-1">
                   {c.label}
                 </p>
 
-                <p
-                  className="font-light text-muted-text"
-                  style={{ fontSize: '12px' }}
-                >
-                  {c.sub}
-                </p>
-              </motion.div>
+                <p className="text-muted-text text-xs">{c.sub}</p>
+              </motion.li>
             );
           })}
-        </div>
+        </ul>
+
+        {/* TRUST BOOST */}
+        <p className="text-center mt-8 text-xs text-muted-text">
+          Trusted by hundreds of patients for Invisalign and smile correction
+          treatments
+        </p>
       </div>
     </section>
   );

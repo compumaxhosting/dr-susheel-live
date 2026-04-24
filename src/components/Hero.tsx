@@ -8,16 +8,18 @@ export default function Hero() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="bg-background overflow-x-hidden">
+    <section
+      className="bg-background overflow-x-hidden"
+      aria-labelledby="hero-heading"
+    >
       <div className="mx-auto grid min-h-[100svh] max-w-[1920px] grid-cols-1 lg:grid-cols-[6fr_4fr]">
-        
-        {/* Image Section */}
+        {/* IMAGE */}
         <div className="relative order-1 h-[420px] sm:h-[560px] lg:min-h-screen">
           <Image
             src="/images/hero.webp"
-            alt="Invisalign clear aligners held by dentist gloves"
+            alt="Dentist holding Invisalign clear aligners for teeth straightening treatment in Hyderabad"
             fill
-            quality={75}
+            priority // 🔥 LCP optimization
             sizes="(max-width: 768px) 100vw, 60vw"
             placeholder="blur"
             blurDataURL="/images/hero-blur.jpg"
@@ -26,47 +28,51 @@ export default function Hero() {
           <div className="absolute inset-0 bg-white/5" />
         </div>
 
-        {/* Content Section */}
+        {/* CONTENT */}
         <motion.div
-          initial={false} // 🔥 no hidden state = instant render
-          animate={
-            reduceMotion
-              ? {}
-              : { opacity: [0, 1], x: [20, 0] }
-          }
-          transition={{ duration: 0.4, ease: "easeOut" }}
+          initial={reduceMotion ? false : { opacity: 0, x: 20 }}
+          animate={reduceMotion ? {} : { opacity: 1, x: 0 }}
+          transition={{ duration: 0.4 }}
           className="order-2 flex items-center px-6 py-10 sm:px-10 lg:px-14 xl:px-16"
         >
-          <div className="max-w-lg lg:max-w-md xl:max-w-lg">
-            
-            <p className="mb-3 text-xs text-green-bg uppercase tracking-[0.25em] sm:text-sm">
-              Hyderabad&apos;s Invisalign Specialists
+          <div className="max-w-lg">
+            {/* EYEBROW */}
+            <p className="mb-3 text-xs uppercase tracking-[0.25em] text-green-bg sm:text-sm">
+              Invisalign Specialists in Hyderabad
             </p>
 
-            <h1 className="text-3xl font-semibold leading-tight tracking-tight text-[#101828] sm:text-5xl xl:text-6xl">
-              A Smile Worth Showing.
+            {/* H1 */}
+            <h1
+              id="hero-heading"
+              className="text-3xl font-semibold leading-tight tracking-tight text-[#101828] sm:text-5xl xl:text-6xl"
+            >
+              Invisalign Treatment in Hyderabad
               <span className="mt-2 block text-[#78cbbd]">
-                Crafted With Precision.
+                Straighten Your Smile Comfortably
               </span>
             </h1>
 
+            {/* SUBTEXT */}
             <p className="mt-4 max-w-md text-sm leading-6 text-[#667085] sm:text-base sm:leading-7 xl:text-lg">
-              Expert Invisalign treatment and gentle pediatric dental care in
-              Hyderabad where every smile has a story.
+              Get expert Invisalign treatment and pediatric dental care from a
+              certified provider. Achieve a confident smile without metal
+              braces.
             </p>
 
-            {/* Buttons */}
+            {/* CTAs */}
             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:gap-4">
               <Link
                 href="/contact"
+                aria-label="Book free Invisalign consultation"
                 className="inline-flex items-center justify-center rounded-full bg-[#78cbbd] 
-                px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+                px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90 focus:ring-2 focus:ring-[#78cbbd]"
               >
                 Book Free Consultation
               </Link>
 
               <Link
                 href="/invisalign"
+                aria-label="View Invisalign treatment details"
                 className="inline-flex items-center justify-center rounded-full border border-[#78cbbd] 
                 px-5 py-2.5 text-sm font-medium text-[#78cbbd] transition hover:bg-[#78cbbd]/10"
               >
@@ -74,13 +80,12 @@ export default function Hero() {
               </Link>
             </div>
 
-            {/* Stats */}
+            {/* TRUST SIGNALS */}
             <div className="mt-6 grid gap-2 text-xs text-[#667085] sm:grid-cols-3 sm:text-sm">
-              <span>500+ Happy Patients</span>
+              <span>4.9★ Rated by Patients</span>
               <span>Certified Invisalign Provider</span>
-              <span>Child-Friendly Practice</span>
+              <span>500+ Successful Cases</span>
             </div>
-
           </div>
         </motion.div>
       </div>

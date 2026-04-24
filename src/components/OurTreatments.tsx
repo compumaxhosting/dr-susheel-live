@@ -100,7 +100,7 @@ export default function OurTreatments() {
             return (
               <motion.div
                 key={t.title}
-                className="bg-background rounded-2xl p-6 border border-borderCustom transition bg-soft-bg"
+                className="bg-background rounded-2xl p-6 border border-borderCustom transition"
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-80px' }}

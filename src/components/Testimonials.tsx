@@ -1,6 +1,7 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from "framer-motion";
+import Image from "next/image";
 
 type Testimonial = {
   quote: string;
@@ -12,32 +13,40 @@ type Testimonial = {
 const testimonials: Testimonial[] = [
   {
     quote:
-      'Dr. Susheel completely transformed how I feel about my smile. The Invisalign process was smoother than I ever imagined — the 3D scan alone blew my mind. 14 months and I have the smile I always wanted.',
-    name: 'Priya Reddy',
-    initials: 'PR',
-    treatment: 'Invisalign · 14 months',
+      "Dr. Susheel completely transformed my smile with Invisalign. The treatment was smooth, and the results exceeded my expectations.",
+    name: "Priya Reddy",
+    initials: "PR",
+    treatment: "Invisalign · 14 months",
   },
   {
     quote:
-      'I was nervous about bringing my 6-year-old to the dentist, but the team here made it a genuinely positive experience. She actually looks forward to her checkups now. That says everything.',
-    name: 'Arjun Sharma',
-    initials: 'AS',
-    treatment: 'Pediatric Care',
+      "Great experience for my child. The clinic is friendly, clean, and very professional. Highly recommended for pediatric care.",
+    name: "Arjun Sharma",
+    initials: "AS",
+    treatment: "Pediatric Care",
   },
   {
     quote:
-      "The clinic is unlike any dental practice I've visited — clean, calm, and the results speak for themselves. My smile makeover exceeded every expectation. Worth every rupee.",
-    name: 'Sneha Patel',
-    initials: 'SP',
-    treatment: 'Smile Makeover',
+      "One of the best dental clinics in Hyderabad. The smile makeover results were amazing and totally worth it.",
+    name: "Sneha Patel",
+    initials: "SP",
+    treatment: "Smile Makeover",
   },
 ];
 
+/* ⭐ Accessible Star Rating */
 function StarRating() {
   return (
-    <div className="flex gap-0.5">
+    <div className="flex gap-0.5" aria-label="5 star rating">
       {[...Array(5)].map((_, i) => (
-        <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill="#D4AF6A">
+        <svg
+          key={i}
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="#D4AF6A"
+          aria-hidden="true"
+        >
           <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
         </svg>
       ))}
@@ -46,39 +55,62 @@ function StarRating() {
 }
 
 export default function Testimonials() {
-  return (
-    <section className="py-20 md:py-28 px-4 md:px-6 bg-[#F7F9FC]">
-      <div className="max-w-7xl mx-auto">
+  const reduceMotion = useReducedMotion();
 
+  return (
+    <section
+      className="py-20 md:py-28 px-4 md:px-6 bg-[#F7F9FC]"
+      aria-labelledby="testimonials-heading"
+    >
+      <div className="max-w-7xl mx-auto">
         {/* HEADER */}
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] eyebrow">
-            Patient Stories
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary">
+            Patient Reviews
           </p>
 
-          <h2 className="mt-3 text-3xl sm:text-4xl font-semibold text-foreground">
-            Words From Our Patients
+          <h2
+            id="testimonials-heading"
+            className="mt-3 text-3xl sm:text-4xl font-semibold text-foreground"
+          >
+            Invisalign Reviews in Hyderabad
           </h2>
 
           <p className="mt-4 text-sm text-muted-text leading-relaxed">
-            Over 500 smiles transformed — here&apos;s what some of them have to say.
+            Trusted by hundreds of patients for Invisalign and dental care.
           </p>
         </div>
 
-        {/* GRID */}
+        {/* GOOGLE REVIEWS IMAGE */}
+        <div className="mb-12 text-center">
+          <p className="text-sm text-muted-text mb-3">
+            Rated 4.9★ on Google by 120+ patients
+          </p>
+
+          <div className="flex justify-center">
+            <Image
+              src="/images/scanner-2.jpeg" // 👈 add your screenshot here
+              alt="Google reviews rating showing 4.9 star rating for dental clinic in Hyderabad"
+              width={320}
+              height={120}
+              className="rounded-xl shadow-sm"
+            />
+          </div>
+        </div>
+
+        {/* TESTIMONIAL GRID */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {testimonials.map((t, i) => (
             <motion.div
               key={t.name}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-80px' }}
-              transition={{ duration: 0.6, delay: i * 0.12 }}
-              className="relative bg-white rounded-2xl p-6 md:p-7 shadow-sm"
+              initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+              whileInView={reduceMotion ? {} : { opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className="relative bg-white rounded-2xl p-6 shadow-sm"
             >
-
               {/* QUOTE MARK */}
-              <div className="absolute -top-4 left-6 text-[70px] font-serif font-bold text-[#6DBFAA] leading-none pointer-events-none">
+              <div className="absolute -top-4 left-6 text-[60px] font-serif text-[#6DBFAA]">
                 &ldquo;
               </div>
 
@@ -99,7 +131,7 @@ export default function Testimonials() {
                       {t.name}
                     </p>
 
-                    <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#EAF7F3] text-[#6DBFAA] tracking-wide">
+                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#EAF7F3] text-[#6DBFAA]">
                       {t.treatment}
                     </span>
                   </div>
@@ -107,11 +139,32 @@ export default function Testimonials() {
 
                 <StarRating />
               </div>
-
             </motion.div>
           ))}
         </div>
       </div>
+
+      {/* ⭐ SEO SCHEMA (CRITICAL) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Dentist",
+            name: "Dr Susheel Aligners",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "Hyderabad",
+              addressCountry: "India",
+            },
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: "4.9",
+              reviewCount: "120",
+            },
+          }),
+        }}
+      />
     </section>
   );
 }
