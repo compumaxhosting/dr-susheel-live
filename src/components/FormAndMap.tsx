@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useForm } from 'react-hook-form';
-import { CheckCircle } from 'lucide-react';
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { useForm } from "react-hook-form";
+import { CheckCircle } from "lucide-react";
 
 type FormData = {
   name: string;
@@ -15,6 +15,7 @@ type FormData = {
 
 export default function FormAndMap() {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -22,15 +23,35 @@ export default function FormAndMap() {
     formState: { errors },
   } = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
-    setSubmitted(true);
+  const onSubmit = async (data: FormData) => {
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        setSubmitted(true);
+      } else {
+        alert("Failed to send. Try again.");
+        console.error(result.error);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <section className="py-16 px-6 bg-soft-bg">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-[55%_45%] gap-10">
-
         {/* MAP */}
         <motion.div
           className="overflow-hidden rounded-2xl h-[480px]"
@@ -64,7 +85,7 @@ export default function FormAndMap() {
               </h2>
 
               <p className="font-dm font-light text-muted-text text-[15px] leading-[1.8]">
-                Thank you! We&apos;ll confirm your appointment within 2 hours during clinic hours.
+                Thank you! We&apos;ll confirm your appointment within 2 hours.
               </p>
 
               <a
@@ -83,111 +104,52 @@ export default function FormAndMap() {
               </h2>
 
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <input
+                  placeholder="Full Name"
+                  {...register("name", { required: "Name is required" })}
+                  className="w-full px-4 py-3 rounded-xl border"
+                />
+                {errors.name && (
+                  <p className="text-red-500 text-xs">{errors.name.message}</p>
+                )}
 
-                {/* NAME */}
-                <div>
-                  <label className="block mb-1.5 text-[13px] font-medium text-foreground">
-                    Full Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Your full name"
-                    className="w-full px-4 py-3 rounded-xl border border-card-border bg-soft-bg text-[14px] outline-none focus:border-primary"
-                    {...register('name', { required: 'Name is required' })}
-                  />
-                  {errors.name && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.name.message}
-                    </p>
-                  )}
-                </div>
+                <input
+                  placeholder="Phone"
+                  {...register("phone", { required: "Phone is required" })}
+                  className="w-full px-4 py-3 rounded-xl border"
+                />
+                {errors.phone && (
+                  <p className="text-red-500 text-xs">{errors.phone.message}</p>
+                )}
 
-                {/* PHONE */}
-                <div>
-                  <label className="block mb-1.5 text-[13px] font-medium text-foreground">
-                    Phone Number
-                  </label>
+                <select
+                  {...register("service", { required: "Select a service" })}
+                  className="w-full px-4 py-3 rounded-xl border"
+                >
+                  <option value="">Select service</option>
+                  <option value="invisalign">Invisalign</option>
+                  <option value="cleaning">Cleaning</option>
+                </select>
 
-                  <div className="flex">
-                    <span className="px-3 flex items-center text-[14px] border border-card-border border-r-0 rounded-l-xl bg-scroll-track text-muted-text">
-                      +91
-                    </span>
+                <input
+                  type="date"
+                  {...register("date")}
+                  className="w-full px-4 py-3 rounded-xl border"
+                />
 
-                    <input
-                      type="tel"
-                      placeholder="Your mobile number"
-                      className="flex-1 px-4 py-3 rounded-r-xl border border-card-border bg-soft-bg text-[14px] outline-none focus:border-primary"
-                      {...register('phone', { required: 'Phone is required' })}
-                    />
-                  </div>
+                <textarea
+                  placeholder="Message"
+                  {...register("message")}
+                  className="w-full px-4 py-3 rounded-xl border"
+                />
 
-                  {errors.phone && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.phone.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* SERVICE */}
-                <div>
-                  <label className="block mb-1.5 text-[13px] font-medium text-foreground">
-                    Service Required
-                  </label>
-
-                  <select
-                    className="w-full px-4 py-3 rounded-xl border border-card-border bg-soft-bg text-[14px] outline-none focus:border-primary"
-                    {...register('service', { required: 'Select a service' })}
-                  >
-                    <option value="">Select a service</option>
-                    <option value="invisalign">Invisalign Consultation</option>
-                    <option value="pediatric">Pediatric Checkup</option>
-                    <option value="whitening">Teeth Cleaning</option>
-                    <option value="smile">Smile Improvement</option>
-                    <option value="other">Other</option>
-                  </select>
-
-                  {errors.service && (
-                    <p className="text-red-500 text-xs mt-1">
-                      {errors.service.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* DATE */}
-                <div>
-                  <label className="block mb-1.5 text-[13px] font-medium text-foreground">
-                    Preferred Date
-                  </label>
-
-                  <input
-                    type="date"
-                    className="w-full px-4 py-3 rounded-xl border border-card-border bg-soft-bg text-[14px] outline-none focus:border-primary"
-                    {...register('date')}
-                  />
-                </div>
-
-                {/* MESSAGE */}
-                <div>
-                  <label className="block mb-1.5 text-[13px] font-medium text-foreground">
-                    Message (Optional)
-                  </label>
-
-                  <textarea
-                    rows={3}
-                    placeholder="Any concerns?"
-                    className="w-full px-4 py-3 rounded-xl border border-card-border bg-soft-bg text-[14px] outline-none focus:border-primary"
-                    {...register('message')}
-                  />
-                </div>
-
-                {/* BUTTON */}
                 <button
                   type="submit"
-                  className="w-full py-3 rounded-full text-white text-[14px] bg-primary hover:opacity-90 transition"
+                  disabled={loading}
+                  className="w-full py-3 rounded-full text-white bg-primary"
                 >
-                  Confirm Appointment
+                  {loading ? "Sending..." : "Confirm Appointment"}
                 </button>
-
               </form>
             </>
           )}
