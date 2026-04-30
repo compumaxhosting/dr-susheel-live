@@ -1,24 +1,33 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(req: Request) {
   try {
+    // ✅ Guard against missing env (prevents build/runtime crash)
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      return Response.json(
+        { success: false, error: "Missing RESEND_API_KEY" },
+        { status: 500 },
+      );
+    }
+
+    const resend = new Resend(apiKey);
+
     const { name, phone, service, date, message } = await req.json();
 
     const data = await resend.emails.send({
       from: "Smilez Dental <noreply@drsusheelinvisalignprovider.com>",
-      to: ["smilezdental8@gmail.com"],
+      to: ["susheelpedodontist@gmail.com"],
+      cc: ["wassay@compumaxllc.com"],
 
-      cc: ["wassay@compumaxllc.com"], // ✅ added CC
+      // ✅ correct field name
+      replyTo: "susheelpedodontist@gmail.com",
 
-      replyTo: "smilezdental8@gmail.com",
       subject: `New Appointment - ${name}`,
 
-     html: `
+      html: `
 <div style="font-family: Arial, sans-serif; background: linear-gradient(135deg, #78cbbd 0%, #4fb3a5 100%); padding:40px 20px;">
   
-  <!-- MAIN CARD -->
   <div style="
     max-width:600px;
     margin:0 auto;
@@ -28,7 +37,6 @@ export async function POST(req: Request) {
     box-shadow:0 10px 30px rgba(0,0,0,0.08);
   ">
 
-    <!-- TOP BANNER -->
     <div style="
       background:#78cbbd;
       padding:24px;
@@ -43,7 +51,6 @@ export async function POST(req: Request) {
       </p>
     </div>
 
-    <!-- BODY -->
     <div style="padding:26px;">
       
       <p style="
@@ -54,7 +61,6 @@ export async function POST(req: Request) {
         A new patient has requested an appointment from your website.
       </p>
 
-      <!-- DETAILS CARD -->
       <div style="
         border:1px solid #e6f4f1;
         border-radius:12px;
@@ -96,7 +102,6 @@ export async function POST(req: Request) {
         </table>
       </div>
 
-      <!-- HIGHLIGHT STRIP -->
       <div style="
         margin-top:20px;
         padding:14px;
@@ -111,7 +116,6 @@ export async function POST(req: Request) {
 
     </div>
 
-    <!-- FOOTER -->
     <div style="
       padding:16px;
       text-align:center;
@@ -124,12 +128,12 @@ export async function POST(req: Request) {
 
   </div>
 </div>
-`,
+      `,
     });
 
     return Response.json({ success: true, data });
   } catch (error) {
     console.error("EMAIL ERROR:", error);
-    return Response.json({ success: false, error });
+    return Response.json({ success: false, error }, { status: 500 });
   }
 }
